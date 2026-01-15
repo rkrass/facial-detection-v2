@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automated Face Detection Test - 12 Images</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #00d9ff;
+            margin-bottom: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+        }
+        .face-card {
+            background: #2d2d44;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+        .face-card img {
+            width: 180px;
+            height: 180px;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+        .label {
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 5px 15px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .happy { background: #ffd93d; color: #1a1a2e; }
+        .sad { background: #74b9ff; color: #1a1a2e; }
+        .angry { background: #ff7675; color: #1a1a2e; }
+        .fear { background: #a29bfe; color: #1a1a2e; }
+        .surprise { background: #fd79a8; color: #1a1a2e; }
+        .neutral { background: #636e72; color: #fff; }
+    </style>
+</head>
+<body>
+    <h1>Face Detection Test - 12 Faces</h1>
+    <div class="grid">
+        <!-- Row 1 -->
+        <div class="face-card">
+            <img src="fer2013_samples/happy_1.jpg" alt="Happy 1">
+            <span class="label happy">HAPPY</span>
+        </div>
+        <div class="face-card">
+            <img src="fer2013_samples/happy_2.jpg" alt="Happy 2">
+            <span class="label happy">HAPPY</span>
+        </div>
+        <div class="face-card">
+            <img src="fer2013_samples/sad_1.jpg" alt="Sad 1">
+            <span class="label sad">SAD</span>
+        </div>
+        <div class="face-card">
+            <img src="fer2013_samples/sad_2.jpg" alt="Sad 2">
+            <span class="label sad">SAD</span>
+        </div>
+        <!-- Row 2 -->
+        <div class="face-card">
+            <img src="fer2013_samples/angry_1.jpg" alt="Angry 1">
+            <span class="label angry">ANGRY</span>
+        </div>
+        <div class="face-card">
+            <img src="fer2013_samples/angry_2.jpg" alt="Angry 2">
+            <span class="label angry">ANGRY</span>
+        </div>
+        <div class="face-card">
+            <img src="fer2013_samples/fear_1.jpg" alt="Fear 1">
+            <span class="label fear">FEAR</span>
+        </div>
+        <div class="face-card">
+            <img src="fer2013_samples/fear_2.jpg" alt="Fear 2">
+            <span class="label fear">FEAR</span>
+        </div>
+        <!-- Row 3 -->
+        <div class="face-card">
+            <img src="fer2013_samples/surprise_1.jpg" alt="Surprise 1">
+            <span class="label surprise">SURPRISE</span>
+        </div>
+        <div class="face-card">
+            <img src="fer2013_samples/surprise_2.jpg" alt="Surprise 2">
+            <span class="label surprise">SURPRISE</span>
+        </div>
+        <div class="face-card">
+            <img src="fer2013_samples/neutral_1.jpg" alt="Neutral 1">
+            <span class="label neutral">NEUTRAL</span>
+        </div>
+        <div class="face-card">
+            <img src="fer2013_samples/neutral_2.jpg" alt="Neutral 2">
+            <span class="label neutral">NEUTRAL</span>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+# Core UI Framework
+PyQt6==6.6.1
+PyQt6-Qt6==6.6.1
+
+# Computer Vision & Face Detection
+opencv-python==4.9.0.80
+mediapipe==0.10.9
+
+# ML Models for Emotion Detection
+deepface==0.0.90
+fer==22.5.1
+tf-keras==2.16.0
+tensorflow==2.16.1
+
+# FACS Analysis
+py-feat==0.6.0
+
+# Image Processing
+Pillow==10.2.0
+numpy==1.26.3
+
+# Data Encryption
+cryptography==42.0.1
+
+# Configuration
+PyYAML==6.0.1
+
+# Logging
+colorlog==6.8.2
+
+# Performance Monitoring
+psutil==5.9.8
+
+# Testing
+pytest==8.0.0
+pytest-qt==4.3.1
+pytest-mock==3.12.0
+pytest-cov==4.1.0
+
+# Screen Capture
+mss==9.0.1
+
+# Development
+black==24.1.1
+flake8==7.0.0
+mypy==1.8.0

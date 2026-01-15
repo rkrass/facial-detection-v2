@@ -1,0 +1,91 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║                    EMOTION TEST PAGE LOCATION                  ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+📍 EXACT FILE PATH:
+   /Users/wow/Code/facial-detection/tests/emotion_test_page.html
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 HOW TO OPEN IT:
+
+Method 1 - Terminal Command (Easiest):
+   cd /Users/wow/Code/facial-detection
+   open tests/emotion_test_page.html
+
+Method 2 - Specific Browser:
+   open -a "Google Chrome" tests/emotion_test_page.html
+   open -a Safari tests/emotion_test_page.html
+   open -a Firefox tests/emotion_test_page.html
+
+Method 3 - Manual (Finder):
+   1. Open Finder
+   2. Press Cmd+Shift+G
+   3. Paste: /Users/wow/Code/facial-detection/tests
+   4. Double-click: emotion_test_page.html
+
+Method 4 - Drag & Drop:
+   1. Navigate to /Users/wow/Code/facial-detection/tests in Finder
+   2. Drag emotion_test_page.html to your browser
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ VERIFY FILE EXISTS:
+
+Run this command:
+   ls -lah /Users/wow/Code/facial-detection/tests/emotion_test_page.html
+
+Expected output:
+   -rw-r--r--  1 wow  staff  11K Jan 14 23:34 .../emotion_test_page.html
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 WHAT THE TEST PAGE CONTAINS:
+
+✓ 8 Emotion Cards:
+  • 😊 Happy
+  • 😢 Sad
+  • 😠 Angry
+  • 🤢 Disgust
+  • 😨 Fear
+  • 😲 Surprise
+  • 😐 Neutral
+  • 😏 Contempt (for deception testing)
+
+✓ Testing Instructions
+✓ Checklist
+✓ Beautiful gradient design
+✓ Face images from Unsplash
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 AFTER OPENING:
+
+1. Make browser FULL SCREEN (Cmd+Ctrl+F on Mac)
+2. Start the facial detection app: ./start.sh
+3. Click "Start Monitoring"
+4. Click "Show Overlay"
+5. You should see green boxes around faces!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❓ STILL CAN'T FIND IT?
+
+Run these debug commands:
+   cd /Users/wow/Code/facial-detection
+   pwd                        # Should show: /Users/wow/Code/facial-detection
+   ls tests/                  # Should show: emotion_test_page.html
+   file tests/emotion_test_page.html  # Shows file type
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The test page DEFINITELY exists at:
+   /Users/wow/Code/facial-detection/tests/emotion_test_page.html
+
+File size: 11KB
+Created: Jan 14 23:34
+Format: HTML with inline CSS and images from Unsplash CDN
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

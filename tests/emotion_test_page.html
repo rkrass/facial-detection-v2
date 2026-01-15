@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detection Test Suite</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e4e4e4;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        /* Webcam Section */
+        .webcam-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .webcam-section h2 {
+            color: #00d9ff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .webcam-container {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .video-wrapper {
+            flex: 1;
+            min-width: 400px;
+            position: relative;
+        }
+
+        #webcam {
+            width: 100%;
+            max-width: 640px;
+            border-radius: 15px;
+            background: #000;
+            transform: scaleX(-1);
+        }
+
+        .webcam-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d9ff, #00ff88);
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 217, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #e4e4e4;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .instructions-panel {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .instruction-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instruction-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .instruction-list li:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #00d9ff, #00ff88);
+            color: #1a1a2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85em;
+            flex-shrink: 0;
+        }
+
+        .hotkey {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9em;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* FACS Info Section */
+        .facs-info {
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+
+        .facs-info h2 {
+            color: #00d9ff;
+            margin-bottom: 15px;
+        }
+
+        .facs-info p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .dataset-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .dataset-item {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .dataset-item h4 {
+            color: #00ff88;
+            margin-bottom: 8px;
+        }
+
+        .dataset-item p {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .dataset-item a {
+            color: #00d9ff;
+            text-decoration: none;
+        }
+
+        .dataset-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Emotion Reference Cards */
+        .reference-section {
+            margin-top: 40px;
+        }
+
+        .reference-section h2 {
+            color: #00d9ff;
+            margin-bottom: 20px;
+        }
+
+        .emotion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .emotion-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .emotion-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 217, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .emotion-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .emotion-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .emotion-name {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .emotion-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            object-position: center top;
+            border-radius: 10px;
+            margin: 15px 0;
+            background: #0f0f1a;
+        }
+
+        .emotion-description {
+            color: #aaa;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .facial-cues {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .facial-cues h4 {
+            color: #00ff88;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .au-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .au-tag {
+            background: rgba(0, 217, 255, 0.2);
+            color: #00d9ff;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-family: monospace;
+        }
+
+        .cue-list {
+            list-style: none;
+            padding: 0;
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .cue-list li {
+            padding: 3px 0;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .cue-list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            background: #00d9ff;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Color coding for emotions */
+        .happy .emotion-icon { background: linear-gradient(135deg, #ffd93d, #ff6b6b); }
+        .sad .emotion-icon { background: linear-gradient(135deg, #74b9ff, #0984e3); }
+        .angry .emotion-icon { background: linear-gradient(135deg, #ff7675, #d63031); }
+        .fear .emotion-icon { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
+        .surprise .emotion-icon { background: linear-gradient(135deg, #fd79a8, #e84393); }
+        .disgust .emotion-icon { background: linear-gradient(135deg, #55efc4, #00b894); }
+        .neutral .emotion-icon { background: linear-gradient(135deg, #636e72, #2d3436); }
+
+        /* FER2013 Test Grid Styles */
+        .fer-test-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .fer-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .fer-image-card {
+            position: relative;
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 10px;
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .fer-image-card:hover {
+            border-color: rgba(0, 217, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .fer-image {
+            width: 192px;
+            height: 192px;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .fer-label {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .happy-label { background: rgba(255, 217, 61, 0.9); color: #1a1a2e; }
+        .sad-label { background: rgba(116, 185, 255, 0.9); color: #1a1a2e; }
+        .angry-label { background: rgba(255, 118, 117, 0.9); color: #1a1a2e; }
+        .fear-label { background: rgba(162, 155, 254, 0.9); color: #1a1a2e; }
+        .surprise-label { background: rgba(253, 121, 168, 0.9); color: #1a1a2e; }
+        .disgust-label { background: rgba(85, 239, 196, 0.9); color: #1a1a2e; }
+        .neutral-label { background: rgba(99, 110, 114, 0.9); color: #fff; }
+
+        /* FER2013 thumbnails in emotion cards */
+        .fer-samples {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            justify-content: center;
+        }
+
+        .fer-thumb {
+            width: 96px;
+            height: 96px;
+            border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        /* Testing Checklist */
+        .checklist-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .checklist-section h2 {
+            color: #00d9ff;
+            margin-bottom: 20px;
+        }
+
+        .checklist {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+        }
+
+        .checklist li {
+            padding: 12px 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checklist li::before {
+            content: "";
+            width: 20px;
+            height: 20px;
+            border: 2px solid #00d9ff;
+            border-radius: 5px;
+            flex-shrink: 0;
+        }
+
+        .checklist li.checked::before {
+            background: #00ff88;
+            border-color: #00ff88;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Facial Detection Test Suite</h1>
+        <p class="subtitle">Real-time emotion detection with FACS-based analysis</p>
+
+        <!-- Webcam Testing Section -->
+        <div class="webcam-section">
+            <h2>Live Webcam Testing</h2>
+            <div class="webcam-container">
+                <div class="video-wrapper">
+                    <video id="webcam" autoplay playsinline></video>
+                    <div class="webcam-controls">
+                        <button class="btn btn-primary" id="startWebcam">Start Webcam</button>
+                        <button class="btn btn-secondary" id="stopWebcam">Stop Webcam</button>
+                    </div>
+                </div>
+                <div class="instructions-panel">
+                    <ul class="instruction-list">
+                        <li>
+                            <span class="step-number">1</span>
+                            <span>Start the facial detection application (Python GUI)</span>
+                        </li>
+                        <li>
+                            <span class="step-number">2</span>
+                            <span>Click <strong>"Start Monitoring"</strong> or press <span class="hotkey">Ctrl+Shift+M</span></span>
+                        </li>
+                        <li>
+                            <span class="step-number">3</span>
+                            <span>Show overlay with <span class="hotkey">Ctrl+Shift+O</span></span>
+                        </li>
+                        <li>
+                            <span class="step-number">4</span>
+                            <span>Start webcam above to test with your face</span>
+                        </li>
+                        <li>
+                            <span class="step-number">5</span>
+                            <span>Make different facial expressions to test emotion detection</span>
+                        </li>
+                        <li>
+                            <span class="step-number">6</span>
+                            <span>Observe multi-model predictions (DeepFace, OpenCV, MediaPipe)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- FACS Information -->
+        <div class="facs-info">
+            <h2>FACS Datasets for Training & Testing</h2>
+            <p>
+                The <strong>Facial Action Coding System (FACS)</strong> is the gold standard for measuring facial expressions.
+                It describes facial movements as combinations of <strong>Action Units (AUs)</strong> - individual muscle movements.
+                Professional emotion detection models are trained on FACS-labeled datasets.
+            </p>
+
+            <div class="dataset-list">
+                <div class="dataset-item">
+                    <h4>CK+ (Cohn-Kanade Extended)</h4>
+                    <p>593 sequences from 123 subjects with FACS AU coding</p>
+                    <a href="https://www.jeffcohn.net/Resources/" target="_blank">Request Access</a>
+                </div>
+                <div class="dataset-item">
+                    <h4>FER2013</h4>
+                    <p>35,887 grayscale images (48x48) with 7 emotions</p>
+                    <a href="https://www.kaggle.com/datasets/msambare/fer2013" target="_blank">Kaggle Download</a>
+                </div>
+                <div class="dataset-item">
+                    <h4>AffectNet</h4>
+                    <p>~1M facial images with 8 emotion categories</p>
+                    <a href="http://mohammadmahoor.com/affectnet/" target="_blank">Request Access</a>
+                </div>
+                <div class="dataset-item">
+                    <h4>JAFFE</h4>
+                    <p>213 images of 10 Japanese female subjects</p>
+                    <a href="https://zenodo.org/record/3451524" target="_blank">Zenodo Download</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- FER2013 Test Images Section -->
+        <div class="reference-section">
+            <h2>FER2013 Dataset Test Images</h2>
+            <p style="color: #888; margin-bottom: 10px;">Real emotion samples from the FER2013 Kaggle dataset (48x48 grayscale, upscaled)</p>
+            <p style="color: #00ff88; margin-bottom: 20px; font-size: 0.9em;">Point the facial detection app at this screen to test emotion recognition accuracy</p>
+
+            <div class="fer-test-grid">
+                <div class="fer-row">
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/happy_1.jpg" alt="Happy 1" class="fer-image">
+                        <span class="fer-label happy-label">HAPPY</span>
+                    </div>
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/happy_2.jpg" alt="Happy 2" class="fer-image">
+                        <span class="fer-label happy-label">HAPPY</span>
+                    </div>
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/sad_1.jpg" alt="Sad 1" class="fer-image">
+                        <span class="fer-label sad-label">SAD</span>
+                    </div>
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/sad_2.jpg" alt="Sad 2" class="fer-image">
+                        <span class="fer-label sad-label">SAD</span>
+                    </div>
+                </div>
+                <div class="fer-row">
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/angry_1.jpg" alt="Angry 1" class="fer-image">
+                        <span class="fer-label angry-label">ANGRY</span>
+                    </div>
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/angry_2.jpg" alt="Angry 2" class="fer-image">
+                        <span class="fer-label angry-label">ANGRY</span>
+                    </div>
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/fear_1.jpg" alt="Fear 1" class="fer-image">
+                        <span class="fer-label fear-label">FEAR</span>
+                    </div>
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/fear_2.jpg" alt="Fear 2" class="fer-image">
+                        <span class="fer-label fear-label">FEAR</span>
+                    </div>
+                </div>
+                <div class="fer-row">
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/surprise_1.jpg" alt="Surprise 1" class="fer-image">
+                        <span class="fer-label surprise-label">SURPRISE</span>
+                    </div>
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/surprise_2.jpg" alt="Surprise 2" class="fer-image">
+                        <span class="fer-label surprise-label">SURPRISE</span>
+                    </div>
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/disgust_1.jpg" alt="Disgust 1" class="fer-image">
+                        <span class="fer-label disgust-label">DISGUST</span>
+                    </div>
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/disgust_2.jpg" alt="Disgust 2" class="fer-image">
+                        <span class="fer-label disgust-label">DISGUST</span>
+                    </div>
+                </div>
+                <div class="fer-row">
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/neutral_1.jpg" alt="Neutral 1" class="fer-image">
+                        <span class="fer-label neutral-label">NEUTRAL</span>
+                    </div>
+                    <div class="fer-image-card">
+                        <img src="fer2013_samples/neutral_2.jpg" alt="Neutral 2" class="fer-image">
+                        <span class="fer-label neutral-label">NEUTRAL</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emotion Reference -->
+        <div class="reference-section">
+            <h2>FACS Emotion Reference (with Action Units)</h2>
+            <p style="color: #888; margin-bottom: 20px;">Each emotion corresponds to specific Action Unit combinations</p>
+
+            <div class="emotion-grid">
+                <div class="emotion-card happy">
+                    <div class="emotion-header">
+                        <span class="emotion-icon">:)</span>
+                        <span class="emotion-name">Happy / Joy</span>
+                    </div>
+                    <div class="fer-samples">
+                        <img src="fer2013_samples/happy_1.jpg" alt="Happy sample" class="fer-thumb">
+                        <img src="fer2013_samples/happy_2.jpg" alt="Happy sample" class="fer-thumb">
+                    </div>
+                    <p class="emotion-description">Duchenne smile with genuine eye involvement. Crow's feet appear around eyes.</p>
+                    <div class="facial-cues">
+                        <h4>FACS Action Units</h4>
+                        <div class="au-tags">
+                            <span class="au-tag">AU6 - Cheek Raise</span>
+                            <span class="au-tag">AU12 - Lip Corner Pull</span>
+                        </div>
+                        <ul class="cue-list">
+                            <li>Raised cheeks</li>
+                            <li>Lip corners pulled up and back</li>
+                            <li>Eyes narrow with crow's feet</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="emotion-card sad">
+                    <div class="emotion-header">
+                        <span class="emotion-icon">:(</span>
+                        <span class="emotion-name">Sad</span>
+                    </div>
+                    <div class="fer-samples">
+                        <img src="fer2013_samples/sad_1.jpg" alt="Sad sample" class="fer-thumb">
+                        <img src="fer2013_samples/sad_2.jpg" alt="Sad sample" class="fer-thumb">
+                    </div>
+                    <p class="emotion-description">Inner brow raise, drooping mouth corners, often with lowered gaze.</p>
+                    <div class="facial-cues">
+                        <h4>FACS Action Units</h4>
+                        <div class="au-tags">
+                            <span class="au-tag">AU1 - Inner Brow Raise</span>
+                            <span class="au-tag">AU4 - Brow Lowerer</span>
+                            <span class="au-tag">AU15 - Lip Corner Depress</span>
+                        </div>
+                        <ul class="cue-list">
+                            <li>Inner eyebrows raised</li>
+                            <li>Lip corners pulled down</li>
+                            <li>Lower lip pushed up</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="emotion-card angry">
+                    <div class="emotion-header">
+                        <span class="emotion-icon">&gt;:(</span>
+                        <span class="emotion-name">Angry</span>
+                    </div>
+                    <div class="fer-samples">
+                        <img src="fer2013_samples/angry_1.jpg" alt="Angry sample" class="fer-thumb">
+                        <img src="fer2013_samples/angry_2.jpg" alt="Angry sample" class="fer-thumb">
+                    </div>
+                    <p class="emotion-description">Lowered brows, tightened lips, narrowed eyes with hard stare.</p>
+                    <div class="facial-cues">
+                        <h4>FACS Action Units</h4>
+                        <div class="au-tags">
+                            <span class="au-tag">AU4 - Brow Lowerer</span>
+                            <span class="au-tag">AU5 - Upper Lid Raise</span>
+                            <span class="au-tag">AU7 - Lid Tightener</span>
+                            <span class="au-tag">AU23 - Lip Tightener</span>
+                        </div>
+                        <ul class="cue-list">
+                            <li>Eyebrows lowered and drawn together</li>
+                            <li>Upper eyelids raised</li>
+                            <li>Lips pressed together</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="emotion-card fear">
+                    <div class="emotion-header">
+                        <span class="emotion-icon">:O</span>
+                        <span class="emotion-name">Fear</span>
+                    </div>
+                    <div class="fer-samples">
+                        <img src="fer2013_samples/fear_1.jpg" alt="Fear sample" class="fer-thumb">
+                        <img src="fer2013_samples/fear_2.jpg" alt="Fear sample" class="fer-thumb">
+                    </div>
+                    <p class="emotion-description">Wide eyes, raised and drawn together brows, horizontal stretched mouth.</p>
+                    <div class="facial-cues">
+                        <h4>FACS Action Units</h4>
+                        <div class="au-tags">
+                            <span class="au-tag">AU1 - Inner Brow Raise</span>
+                            <span class="au-tag">AU2 - Outer Brow Raise</span>
+                            <span class="au-tag">AU4 - Brow Lowerer</span>
+                            <span class="au-tag">AU5 - Upper Lid Raise</span>
+                            <span class="au-tag">AU20 - Lip Stretch</span>
+                        </div>
+                        <ul class="cue-list">
+                            <li>Eyebrows raised and pulled together</li>
+                            <li>Upper eyelids raised (white visible)</li>
+                            <li>Mouth stretched horizontally</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="emotion-card surprise">
+                    <div class="emotion-header">
+                        <span class="emotion-icon">:0</span>
+                        <span class="emotion-name">Surprise</span>
+                    </div>
+                    <div class="fer-samples">
+                        <img src="fer2013_samples/surprise_1.jpg" alt="Surprise sample" class="fer-thumb">
+                        <img src="fer2013_samples/surprise_2.jpg" alt="Surprise sample" class="fer-thumb">
+                    </div>
+                    <p class="emotion-description">Raised eyebrows (curved), wide open eyes, dropped jaw.</p>
+                    <div class="facial-cues">
+                        <h4>FACS Action Units</h4>
+                        <div class="au-tags">
+                            <span class="au-tag">AU1 - Inner Brow Raise</span>
+                            <span class="au-tag">AU2 - Outer Brow Raise</span>
+                            <span class="au-tag">AU5 - Upper Lid Raise</span>
+                            <span class="au-tag">AU26 - Jaw Drop</span>
+                        </div>
+                        <ul class="cue-list">
+                            <li>Entire eyebrow raised high</li>
+                            <li>Eyes wide open</li>
+                            <li>Jaw dropped open</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="emotion-card disgust">
+                    <div class="emotion-header">
+                        <span class="emotion-icon">:P</span>
+                        <span class="emotion-name">Disgust</span>
+                    </div>
+                    <div class="fer-samples">
+                        <img src="fer2013_samples/disgust_1.jpg" alt="Disgust sample" class="fer-thumb">
+                        <img src="fer2013_samples/disgust_2.jpg" alt="Disgust sample" class="fer-thumb">
+                    </div>
+                    <p class="emotion-description">Nose wrinkle, raised upper lip, lowered brows, narrowed eyes.</p>
+                    <div class="facial-cues">
+                        <h4>FACS Action Units</h4>
+                        <div class="au-tags">
+                            <span class="au-tag">AU9 - Nose Wrinkler</span>
+                            <span class="au-tag">AU10 - Upper Lip Raise</span>
+                            <span class="au-tag">AU4 - Brow Lowerer</span>
+                        </div>
+                        <ul class="cue-list">
+                            <li>Nose wrinkled</li>
+                            <li>Upper lip raised</li>
+                            <li>Chin raised</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="emotion-card neutral">
+                    <div class="emotion-header">
+                        <span class="emotion-icon">:|</span>
+                        <span class="emotion-name">Neutral</span>
+                    </div>
+                    <div class="fer-samples">
+                        <img src="fer2013_samples/neutral_1.jpg" alt="Neutral sample" class="fer-thumb">
+                        <img src="fer2013_samples/neutral_2.jpg" alt="Neutral sample" class="fer-thumb">
+                    </div>
+                    <p class="emotion-description">Relaxed face with no strong activation of facial muscles.</p>
+                    <div class="facial-cues">
+                        <h4>FACS Action Units</h4>
+                        <div class="au-tags">
+                            <span class="au-tag">No AUs Active</span>
+                        </div>
+                        <ul class="cue-list">
+                            <li>Relaxed forehead</li>
+                            <li>Eyes at rest</li>
+                            <li>Mouth closed, relaxed</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testing Checklist -->
+        <div class="checklist-section">
+            <h2>Testing Checklist</h2>
+            <ul class="checklist">
+                <li>Application starts without errors</li>
+                <li>Faces detected correctly (not icons/emojis)</li>
+                <li>Bounding boxes appear around faces</li>
+                <li>Multi-model predictions display (DeepFace, OpenCV)</li>
+                <li>Confidence scores are reasonable (>50%)</li>
+                <li>Facial mesh overlay toggles properly</li>
+                <li>Multiple faces detected simultaneously</li>
+                <li>MediaPipe blendshapes working</li>
+                <li>Emotion smoothing prevents flickering</li>
+                <li>Session logging works correctly</li>
+            </ul>
+        </div>
+
+        <footer>
+            Facial Detection & Emotion Analysis System - FACS-Based Testing Environment
+        </footer>
+    </div>
+
+    <script>
+        // Webcam functionality
+        const video = document.getElementById('webcam');
+        const startBtn = document.getElementById('startWebcam');
+        const stopBtn = document.getElementById('stopWebcam');
+        let stream = null;
+
+        startBtn.addEventListener('click', async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: 'user'
+                    }
+                });
+                video.srcObject = stream;
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+            } catch (err) {
+                alert('Could not access webcam: ' + err.message);
+            }
+        });
+
+        stopBtn.addEventListener('click', () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                stream = null;
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            }
+        });
+
+        // Initial state
+        stopBtn.disabled = true;
+    </script>
+</body>
+</html>

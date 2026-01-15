@@ -1,0 +1,90 @@
+# Claude Code Instructions for Facial Detection Project
+
+## Project Overview
+This is a cross-platform desktop application for real-time facial detection and emotion analysis with deception detection capabilities. Built with Python, PyQt6, and multiple ML models.
+
+## Key Architecture Principles
+1. **Modular Design**: Each component (models, detection, UI, core) is independent
+2. **Multi-Model Ensemble**: Uses DeepFace, FER, MediaPipe, and OpenCV together
+3. **Adaptive Performance**: Automatically adjusts frame rate based on system load
+4. **Privacy First**: Local processing, encrypted session logs
+
+## Common Tasks
+
+### Running the Application
+```bash
+cd /Users/wow/Code/facial-detection
+python -m src.main
+```
+
+### Running Tests
+```bash
+pytest tests/ -v
+pytest tests/unit/ -v  # Unit tests only
+pytest tests/integration/ -v  # Integration tests only
+```
+
+### Testing Emotion Detection
+1. Run the application
+2. Open `tests/emotion_test_page.html` in a browser
+3. Start monitoring (Ctrl+Shift+M)
+4. Enable overlay (Ctrl+Shift+O)
+5. Verify each emotion is detected correctly
+
+## Code Modification Guidelines
+
+### Adding a New Emotion Model
+1. Create new file in `src/models/` inheriting from `BaseEmotionModel`
+2. Implement `initialize()` and `predict_emotion()` methods
+3. Add to `EmotionDetector` in `src/detection/emotion_detector.py`
+4. Update config in `config/settings.yaml`
+5. Add tests in `tests/unit/test_models.py`
+
+### Modifying Detection Logic
+- **Emotion Detection**: Edit `src/detection/emotion_detector.py`
+- **Microexpressions**: Edit `src/detection/microexpression.py`
+- **Deception**: Edit `src/detection/deception.py`
+- **FACS AUs**: Edit `src/models/facs_analyzer.py`
+
+### Changing UI
+- **Main Window**: `src/ui/main_window.py`
+- **Overlay**: `src/ui/overlay.py`
+- **Hotkeys**: Update `config/settings.yaml` under `ui.hotkeys`
+
+## Configuration
+All configuration is in `config/settings.yaml`:
+- Performance settings (FPS, CPU limits)
+- Model enable/disable and weights
+- FACS and deception parameters
+- UI styling and hotkeys
+- Logging and encryption settings
+
+## Important Files
+- `src/main.py`: Application entry point
+- `src/core/session_manager.py`: Orchestrates all components
+- `src/detection/emotion_detector.py`: Coordinates ML models
+- `src/models/ensemble.py`: Voting logic for multi-model predictions
+- `config/settings.yaml`: All configuration
+- `tests/emotion_test_page.html`: Emotion detection test page
+
+## Testing Strategy
+1. **Unit Tests**: Test individual components in isolation
+2. **Integration Tests**: Test component interactions
+3. **Manual Testing**: Use emotion_test_page.html for visual verification
+4. **Performance Testing**: Monitor FPS and CPU usage during long sessions
+
+## Dependencies
+Key dependencies (see requirements.txt):
+- PyQt6: UI framework
+- DeepFace: Emotion detection model
+- FER: Facial expression recognition
+- MediaPipe: Facial landmarks
+- py-feat: FACS Action Unit detection
+- OpenCV: Computer vision operations
+- cryptography: Session log encryption
+
+## Troubleshooting
+- **Model initialization fails**: Check dependencies are installed
+- **Low FPS**: Disable some models or reduce target FPS
+- **No faces detected**: Check screen capture is working, try different detection method
+- **Overlay not showing**: Check it's enabled and not behind other windows

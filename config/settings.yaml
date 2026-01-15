@@ -1,0 +1,124 @@
+# Facial Detection Application Configuration
+
+# Performance Settings
+performance:
+  initial_fps: 10  # Starting frame rate (adaptive)
+  min_fps: 5       # Minimum FPS under high load
+  max_fps: 30      # Maximum FPS
+  adaptive: true   # Auto-adjust based on system performance
+  target_cpu_percent: 70  # Target CPU usage percentage
+
+# Model Configuration
+models:
+  # Enable/disable individual models
+  deepface:
+    enabled: true
+    backend: "opencv"  # Options: opencv, ssd, dlib, mtcnn, retinaface
+    weight: 1.0
+
+  fer:
+    enabled: true
+    weight: 1.0
+
+  mediapipe:
+    enabled: true
+    weight: 1.0
+
+  opencv:
+    enabled: true
+    model_path: "config/model_weights/emotion_model.h5"
+    weight: 1.0
+
+# FACS Configuration
+facs:
+  enabled: false  # Set to true if py-feat is installed (pip install py-feat)
+  detector: "py-feat"  # py-feat for comprehensive AU detection
+
+  # Action Units associated with deception
+  deception_aus:
+    - 4   # Brow Lowerer
+    - 15  # Lip Corner Depressor
+    - 23  # Lip Tightener
+    - 24  # Lip Pressor
+
+# Ensemble Configuration
+ensemble:
+  method: "weighted_voting"  # Options: weighted_voting, average, max_confidence
+  min_models_required: 2     # Minimum models that must agree
+
+# Deception Detection
+deception:
+  enabled: true
+  confidence_threshold: 0.8  # 80% confidence
+  microexpression_window_ms: 500  # Time window for microexpression detection
+
+  # Emotion patterns that may indicate deception
+  suspicious_patterns:
+    - ["fear", "contempt"]
+    - ["disgust", "happiness"]
+    - ["surprise", "anger"]
+
+# Screen Capture
+screen_capture:
+  monitor: 0  # Monitor index (0 = primary)
+  region: null  # null = full screen, or [x, y, width, height]
+
+# UI Configuration
+ui:
+  overlay:
+    enabled: true
+    visible_on_start: false  # Start in discreet mode
+
+    # Bounding box styling
+    bbox:
+      color: [0, 255, 0]  # RGB green
+      thickness: 2
+      deception_color: [255, 0, 0]  # RGB red for deception
+
+    # Label styling
+    label:
+      font_size: 12
+      background_opacity: 0.7
+      show_confidence: true
+      show_emotion: true
+      show_aus: false  # Show Action Units (can be verbose)
+
+  # Hotkeys
+  hotkeys:
+    toggle_overlay: "Ctrl+Shift+O"
+    toggle_monitoring: "Ctrl+Shift+M"
+    save_screenshot: "Ctrl+Shift+S"
+
+# Session Logging
+logging:
+  enabled: true
+  directory: "sessions"
+  format: "json"
+  encrypt: true
+
+  # What to log
+  log_emotions: true
+  log_confidence: true
+  log_aus: true
+  log_deception_events: true
+  log_fps: true
+
+  # Auto-save interval (seconds)
+  autosave_interval: 60
+
+# Encryption
+encryption:
+  algorithm: "AES-256"
+  key_derivation: "PBKDF2"
+  iterations: 100000
+
+# Emotions to detect (standard 7 + neutral)
+emotions:
+  - "angry"
+  - "disgust"
+  - "fear"
+  - "happy"
+  - "sad"
+  - "surprise"
+  - "neutral"
+  - "contempt"  # Added for deception detection
