@@ -28,6 +28,10 @@ class FaceDetector:
 
         self.is_initialized = False
 
+        # Frame caching for consistent results on static images
+        self._prev_frame_hash = None
+        self._prev_faces = []
+
     def initialize(self) -> bool:
         """Initialize face detection models."""
         try:
@@ -118,41 +122,19 @@ class FaceDetector:
             # Apply histogram equalization for better detection consistency
             gray = cv2.equalizeHist(gray)
 
-            # Multi-pass detection: optimized for 12-face test
-            all_faces = []
+            # Check if frame is identical to previous (for static image stability)
+            frame_hash = hash(gray.tobytes())
+            if frame_hash == self._prev_frame_hash and self._prev_faces:
+                return self._prev_faces
 
-            # Pass 1: Standard detection
-            faces1 = self.opencv_cascade.detectMultiScale(
+            # Single-pass detection for consistent results
+            faces = self.opencv_cascade.detectMultiScale(
                 gray,
-                scaleFactor=1.1,
-                minNeighbors=5,
-                minSize=(40, 40),
-                flags=cv2.CASCADE_SCALE_IMAGE
-            )
-            all_faces.extend(list(faces1))
-
-            # Pass 2: Finer scale
-            faces2 = self.opencv_cascade.detectMultiScale(
-                gray,
-                scaleFactor=1.05,
-                minNeighbors=6,
-                minSize=(35, 35),
-                flags=cv2.CASCADE_SCALE_IMAGE
-            )
-            all_faces.extend(list(faces2))
-
-            # Pass 3: Extra sensitive for difficult faces
-            faces3 = self.opencv_cascade.detectMultiScale(
-                gray,
-                scaleFactor=1.03,
-                minNeighbors=8,
+                scaleFactor=1.02,
+                minNeighbors=9,
                 minSize=(30, 30),
                 flags=cv2.CASCADE_SCALE_IMAGE
             )
-            all_faces.extend(list(faces3))
-
-            # Deduplicate with NMS
-            faces = self._nms_faces(all_faces, overlap_threshold=0.35) if all_faces else []
 
             # Convert to FaceRegion objects with aspect ratio filtering
             face_regions = []
@@ -167,6 +149,10 @@ class FaceDetector:
                         height=int(h),
                         confidence=0.9  # OpenCV doesn't provide confidence
                     ))
+
+            # Cache results for static image stability
+            self._prev_frame_hash = frame_hash
+            self._prev_faces = face_regions
 
             return face_regions
 

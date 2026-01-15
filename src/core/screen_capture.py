@@ -24,10 +24,13 @@ class ScreenCapture:
 
         # Get monitor info
         self.monitors = self.sct.monitors
-        if monitor_index >= len(self.monitors):
-            raise ValueError(f"Monitor index {monitor_index} out of range. Available: {len(self.monitors)}")
+        # monitors[0] is all monitors combined, monitors[1+] are individual monitors
+        actual_index = monitor_index + 1
+        if actual_index >= len(self.monitors):
+            # Fallback to all monitors if requested index doesn't exist
+            actual_index = 0
 
-        self.monitor = self.monitors[monitor_index + 1]  # +1 because index 0 is all monitors
+        self.monitor = self.monitors[actual_index]
 
     def capture_frame(self) -> Optional[np.ndarray]:
         """

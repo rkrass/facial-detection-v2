@@ -4,7 +4,8 @@ Automated test for face detection.
 Opens test page and verifies:
 1. All 12 faces are detected
 2. No false positives (exactly 12 faces)
-3. Bounding boxes are stable for 5 seconds
+3. Consistent detection (same count every frame)
+4. Zero bounding box movement (still images should have no movement)
 """
 
 import sys
@@ -22,15 +23,17 @@ from src.main import load_config
 
 EXPECTED_FACES = 12
 TEST_DURATION = 5  # seconds
-STABILITY_THRESHOLD = 10  # max pixels movement allowed
+STABILITY_THRESHOLD = 0  # For still images, NO movement allowed
 
 
 def calculate_stability(history):
     """Calculate max movement using spatial matching (not face_id)."""
     if len(history) < 2:
-        return 0
+        return 0, 0
 
     max_movement = 0
+    total_movements = 0
+    movement_count = 0
 
     for i in range(1, len(history)):
         prev_positions = list(history[i-1].values())
@@ -51,8 +54,24 @@ def calculate_stability(history):
             # Only count if there was a nearby face (within 100px)
             if min_dist < 100:
                 max_movement = max(max_movement, min_dist)
+                total_movements += min_dist
+                movement_count += 1
 
-    return max_movement
+    avg_movement = total_movements / movement_count if movement_count > 0 else 0
+    return max_movement, avg_movement
+
+
+def check_consistency(face_counts):
+    """Check if face count is consistent across all frames."""
+    if not face_counts:
+        return False, 0, 0
+
+    # For still images, we want EXACTLY the same count every frame
+    unique_counts = set(face_counts)
+    is_consistent = len(unique_counts) == 1
+    variance = max(face_counts) - min(face_counts)
+
+    return is_consistent, variance, face_counts[0] if is_consistent else -1
 
 
 def run_test():
@@ -145,25 +164,33 @@ def run_test():
     print(f"  Average detected: {avg_faces:.1f}")
     print(f"  Min detected: {min_faces}")
     print(f"  Max detected: {max_faces}")
+    print(f"  Frames processed: {len(face_counts)}")
+
+    # Check consistency
+    is_consistent, variance, consistent_count = check_consistency(face_counts)
+    print(f"\nConsistency (still image test):")
+    print(f"  Same count every frame: {'Yes' if is_consistent else 'No'}")
+    print(f"  Count variance: {variance} (should be 0)")
+    print(f"  Unique counts seen: {sorted(set(face_counts))}")
 
     # Check stability
-    stability = calculate_stability(position_history)
-    print(f"\nStability:")
-    print(f"  Max movement: {stability:.1f} pixels")
-    print(f"  Threshold: {STABILITY_THRESHOLD} pixels")
+    max_movement, avg_movement = calculate_stability(position_history)
+    print(f"\nBounding Box Stability (still image test):")
+    print(f"  Max movement: {max_movement:.1f} pixels (should be 0)")
+    print(f"  Avg movement: {avg_movement:.1f} pixels")
 
     # Determine pass/fail
     print("\n" + "-" * 60)
 
     tests_passed = 0
-    tests_total = 3
+    tests_total = 4
 
     # Test 1: All 12 faces detected
     if min_faces >= EXPECTED_FACES:
-        print("✓ PASS: All 12 faces detected")
+        print("✓ PASS: All 12 faces detected in every frame")
         tests_passed += 1
     else:
-        print(f"✗ FAIL: Only detected {min_faces}/{EXPECTED_FACES} faces")
+        print(f"✗ FAIL: Only detected {min_faces}/{EXPECTED_FACES} faces (min across frames)")
 
     # Test 2: No false positives
     if max_faces <= EXPECTED_FACES:
@@ -172,12 +199,21 @@ def run_test():
     else:
         print(f"✗ FAIL: False positives detected ({max_faces - EXPECTED_FACES} extra)")
 
-    # Test 3: Stable bounding boxes
-    if stability <= STABILITY_THRESHOLD:
-        print("✓ PASS: Bounding boxes stable")
+    # Test 3: Consistent detection (same count every frame for still images)
+    if is_consistent and consistent_count == EXPECTED_FACES:
+        print("✓ PASS: Consistent detection (exactly 12 in every frame)")
+        tests_passed += 1
+    elif is_consistent:
+        print(f"✗ FAIL: Consistent but wrong count ({consistent_count} instead of {EXPECTED_FACES})")
+    else:
+        print(f"✗ FAIL: Inconsistent detection (count varies: {min_faces}-{max_faces})")
+
+    # Test 4: Zero bounding box movement (still images should have NO movement)
+    if max_movement == 0:
+        print("✓ PASS: Zero bounding box movement (perfect for still images)")
         tests_passed += 1
     else:
-        print(f"✗ FAIL: Bounding boxes unstable ({stability:.1f}px movement)")
+        print(f"✗ FAIL: Bounding boxes moving on still image ({max_movement:.1f}px max)")
 
     print("-" * 60)
     print(f"\nOVERALL: {tests_passed}/{tests_total} tests passed")
