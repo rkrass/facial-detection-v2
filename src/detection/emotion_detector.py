@@ -153,8 +153,8 @@ class EmotionDetector:
         for model in self.models:
             if model.model_name == "MediaPipe" and hasattr(model, 'get_landmarks'):
                 landmarks_data = model.get_landmarks()
-                if landmarks_data:
-                    # Convert to numpy array for overlay
+                if landmarks_data and len(landmarks_data) >= 468:
+                    # Convert to numpy array for overlay (keep x, y only)
                     import numpy as np
                     landmarks = np.array([(lm[0], lm[1]) for lm in landmarks_data])
                 break

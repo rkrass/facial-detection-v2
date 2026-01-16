@@ -363,8 +363,8 @@ class MainWindow(QMainWindow):
         self.overlay_button.setMinimumHeight(45)
         layout.addWidget(self.overlay_button)
 
-        # Mesh toggle button
-        self.mesh_button = QPushButton("Show Face Mesh")
+        # Mesh toggle button (mesh enabled by default)
+        self.mesh_button = QPushButton("Hide Face Mesh")
         self.mesh_button.clicked.connect(self.toggle_mesh)
         self.mesh_button.setEnabled(False)
         self.mesh_button.setMinimumHeight(45)

@@ -134,8 +134,8 @@ class FaceDetector:
             faces = self.opencv_cascade.detectMultiScale(
                 gray,
                 scaleFactor=1.02,
-                minNeighbors=6,
-                minSize=(25, 25),
+                minNeighbors=15,
+                minSize=(35, 35),
                 flags=cv2.CASCADE_SCALE_IMAGE
             )
 
@@ -144,7 +144,7 @@ class FaceDetector:
             for (x, y, w, h) in faces:
                 # Filter by aspect ratio - faces are roughly square (0.8 to 1.25)
                 aspect_ratio = w / h if h > 0 else 0
-                if 0.8 <= aspect_ratio <= 1.25:
+                if 0.85 <= aspect_ratio <= 1.2:
                     face_regions.append(FaceRegion(
                         x=int(x),
                         y=int(y),

@@ -51,7 +51,7 @@ class TransparentOverlay(QWidget):
         super().__init__()
         self.config = config
         self.frame_analysis: Optional[FrameAnalysis] = None
-        self.show_mesh = False  # Toggle for facial mesh display
+        self.show_mesh = True  # Toggle for facial mesh display (enabled by default)
 
         # Face tracking - use spatial tracking instead of index-based
         self.tracked_faces = {}  # track_id -> {x, y, w, h, emotion, history, age}
@@ -331,7 +331,15 @@ class TransparentOverlay(QWidget):
 
     def _draw_mesh(self, painter: QPainter, face):
         """Draw facial mesh landmarks if available."""
-        if face.landmarks is None or not self.show_mesh:
+        if not self.show_mesh:
+            return
+
+        if face.landmarks is None:
+            # Debug: landmarks not available
+            return
+
+        if len(face.landmarks) < 468:
+            # Not enough landmarks
             return
 
         # Get face region and expand it to match MediaPipe's extraction area
