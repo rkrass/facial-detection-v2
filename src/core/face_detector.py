@@ -29,7 +29,7 @@ class FaceDetector:
         self.is_initialized = False
 
         # Frame caching for consistent results on static images
-        self._prev_frame_hash = None
+        self._prev_frame_small = None
         self._prev_faces = []
 
     def initialize(self) -> bool:
@@ -122,26 +122,29 @@ class FaceDetector:
             # Apply histogram equalization for better detection consistency
             gray = cv2.equalizeHist(gray)
 
-            # Check if frame is identical to previous (for static image stability)
-            frame_hash = hash(gray.tobytes())
-            if frame_hash == self._prev_frame_hash and self._prev_faces:
-                return self._prev_faces
+            # Check if frame is similar to previous (for static image stability)
+            # Use downsampled comparison to tolerate minor screen capture variations
+            small = cv2.resize(gray, (32, 32))
+            if self._prev_frame_small is not None and self._prev_faces:
+                diff = cv2.absdiff(small, self._prev_frame_small)
+                if np.mean(diff) < 10:  # Similar frame (tolerate minor variations)
+                    return self._prev_faces
 
             # Single-pass detection for consistent results
             faces = self.opencv_cascade.detectMultiScale(
                 gray,
                 scaleFactor=1.02,
-                minNeighbors=9,
-                minSize=(30, 30),
+                minNeighbors=6,
+                minSize=(25, 25),
                 flags=cv2.CASCADE_SCALE_IMAGE
             )
 
             # Convert to FaceRegion objects with aspect ratio filtering
             face_regions = []
             for (x, y, w, h) in faces:
-                # Filter by aspect ratio - faces are roughly square (0.7 to 1.4)
+                # Filter by aspect ratio - faces are roughly square (0.8 to 1.25)
                 aspect_ratio = w / h if h > 0 else 0
-                if 0.7 <= aspect_ratio <= 1.4:
+                if 0.8 <= aspect_ratio <= 1.25:
                     face_regions.append(FaceRegion(
                         x=int(x),
                         y=int(y),
@@ -151,7 +154,7 @@ class FaceDetector:
                     ))
 
             # Cache results for static image stability
-            self._prev_frame_hash = frame_hash
+            self._prev_frame_small = small
             self._prev_faces = face_regions
 
             return face_regions
